@@ -6,5 +6,6 @@
 # include <stdarg.h>
 
 int ft_printf(const char *, ...);
+int put_char(char c);
 
 #endif
