@@ -1,22 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   put_unum.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: skteifan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/24 11:55:56 by skteifan          #+#    #+#             */
-/*   Updated: 2024/09/26 11:52:01 by skteifan         ###   ########.fr       */
+/*   Created: 2024/09/26 11:53:38 by skteifan          #+#    #+#             */
+/*   Updated: 2024/09/26 12:00:15 by skteifan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "ft_printf.h"
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
+int	put_unum(unsigned int n)
+{
+	int		count;
 
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdarg.h>
-
-int	ft_printf(const char *s, ...);
-
-#endif
+	count = 0;
+	if (n < 10)
+		count += put_char(n + 48);
+	else
+	{
+		count += put_unum(n / 10);
+		count += put_unum(n % 10);
+	}
+	return (count);
+}
