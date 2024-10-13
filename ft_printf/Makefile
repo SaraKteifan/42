@@ -4,7 +4,14 @@ COMPILER = cc
 
 CFLAGS = -Wall -Wextra -Werror
 
-FILES = ft_printf
+FILES = ft_printf \
+	ft_putchar \
+	ft_putstr \
+	ft_putptr \
+	ft_putnum \
+	ft_putunum \
+	ft_putlhex \
+	ft_putuhex \
 
 CFILES = $(FILES:%=%.c)
 

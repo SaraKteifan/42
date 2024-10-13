@@ -6,7 +6,7 @@
 /*   By: skteifan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 11:55:40 by skteifan          #+#    #+#             */
-/*   Updated: 2024/09/26 12:07:48 by skteifan         ###   ########.fr       */
+/*   Updated: 2024/10/01 12:47:39 by skteifan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ft_printf.h"
@@ -25,22 +25,35 @@ int	in_set(const char *set, char c)
 	return (0);
 }
 
-char	*flags_set(char *s)
+int	check_flags_exist(t_flags	*flags)
 {
-	int		i;
-	char	*flags;
+	if (flags->min != 0 || flags->precision != 0 || flags->left != 0
+		|| flags->zero != 0 || flags->form != 0 || flags->space != 0
+		|| flags->plus != 0)
+		return (1);
+	return (0);
+}
 
+t_flags	*flags_set(char *s)
+{
+	t_flags	*flags;
+
+	flags = malloc(sizeof(t_flags));
+	if (!flags)
+		return (NULL);
 	i = 0;
-	while (!in_set("cspdiuxX%", s[i]))
-		i++;
-	flags = malloc(i + 1);
-	i = 0;
-	while (!in_set("cspdiuxX%", s[i]))
+	flags->min = get_min_width(s);
+	flags->precision = get_precision(s);
+	flags->left = in_set(s, '-');
+	flags->zero = in_set(s, '0');
+	flags->form = in_set(s, '#');
+	flags->space = in_set(s, ' ');
+	flags->plus = in_set(s, '+');
+	if (!check_flags_exist(flags))
 	{
-		flags[i] = s[i];
-		i++;
+		free (flags);
+		return (NULL);
 	}
-	flags[i] = '\0';
 	return (flags);
 }
 
@@ -72,16 +85,17 @@ int	handle_argument(va_list ap, char *s)
 {
 	int		i;
 	int		count;
-	char	c;
-	char	*flags;
+	t_flags	*flags;
 
 	i = 0;
+	count = 0;
 	flags = flags_set(s);
 	while (!in_set("cspdiuxX%", s[i]))
 		i++;
-	if (flags[0] != '\0')
+	if (flags == NULL)
+		count += put_arg(ap, s[i]);
+	else
 		count += handle_flags(ap, flags, s[i]);
-	count += put_arg(ap, s[i]);
 	return (count);
 }
 
@@ -98,7 +112,7 @@ int	ft_printf(const char *s, ...)
 	{
 		if (s[i] == '%')
 		{
-			count += handle_argument(va_list ap, &s[i++]);
+			count += handle_argument(ap, (char *)&s[++i]);
 			while (!in_set("cspdiuxX%", s[i]))
 				i++;
 			i++;

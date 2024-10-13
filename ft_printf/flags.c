@@ -5,46 +5,67 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: skteifan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/26 12:19:24 by skteifan          #+#    #+#             */
-/*   Updated: 2024/09/26 16:50:16 by skteifan         ###   ########.fr       */
+/*   Created: 2024/09/29 12:25:04 by skteifan          #+#    #+#             */
+/*   Updated: 2024/09/29 13:08:22 by skteifan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ft_printf.h"
 
-int	handle_alternate_form_flag(char c)
+int	get_min_width(char *flags)
 {
-	if (c == 'x')
+	int	i;
+	int	res;
+
+	i = 0;
+	res = 0;
+	while (flags[i] == ' ' || flags[i] == '-' || flags[i] == '+' || flags[i] == '#')
+		i++;
+	while (flags[i] >= '0' && flags[i] <= '9')
 	{
-		write(1, "0x", 2);
-		return (2);
+		res *= 10;
+		res += (flags[i] - 48);
+		i++;
 	}
-	if (c == 'X')
-	{
-		write(1, "0X", 2);
-		return (2);
-	}
-	return (0);
+	return (res);
 }
 
-int	handle_space_flag(char c)
+int	get_precision(char *flags)
 {
-	if (c == 'i' || c == 'd')
+	int	i;
+	int	res;
+
+	i = 0;
+	res = 0;
+	while (flags[i] != '.' && flags[i])
+		i++;
+	if (flags[i] == '.')
+		i++;
+	while (flags[i] >= '0' && flags[i] <= '9')
 	{
-		write(1, " ", 1);
-		return (1);
+		res *= 10;
+		res += (flags[i] - 48);
+		i++;
 	}
-	return (0);
+	return (res);
 }
 
-int	handle_flags(va_list ap, char *flags, char c)
+int	handle_flags(va_list ap, t_flags *flags, char c)
 {
 	int	count;
 
-	count = 0;
-	if (in_set(flags, '#'))
-		count += handle_alternate_form_flag(c);
-	if (in_set(flags, ' ') && !in_set(flags, '+'))
-		count += handle_space_flag(c);
-	if (in_set(flags, '+'))
-		;
+	if (c == 'c')
+		count += put_char_flags(va_arg(ap, int), flags);
+	if (c == 's')
+		count += put_str_flags(va_arg(ap, char *), flags);
+	if (c == 'p')
+		count += put_ptr_flags(va_arg(ap, void *), flags);
+	if (c == 'd' || c == 'i')
+		count += put_num_flags(va_arg(ap, int), flags);
+	if (c == 'u')
+		count += put_unum_flags(va_arg(ap, unsigned int), flags);
+	if (c == 'x')
+		count += put_lhex_flags(va_arg(ap, unsigned int), flags);
+	if (c == 'X')
+		count += put_uhex_flags(va_arg(ap, unsigned int), flags);
+	return (count);
 }
