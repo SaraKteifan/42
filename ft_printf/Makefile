@@ -12,6 +12,16 @@ FILES = ft_printf \
 	ft_putunum \
 	ft_putlhex \
 	ft_putuhex \
+	ft_utils \
+	ft_flags_bonus \
+	ft_get_flags_bonus \
+	ft_putchar_bonus \
+	ft_putstr_bonus \
+	ft_putptr_bonus \
+	ft_putnum_bonus \
+	ft_putunum_bonus \
+	ft_putlhex_bonus \
+	ft_putuhex_bonus
 
 CFILES = $(FILES:%=%.c)
 
@@ -25,6 +35,8 @@ $(NAME): $(OFILES)
 
 all: $(NAME)
 
+bonus: all
+
 clean:
 	rm -f $(OFILES)
 
@@ -33,4 +45,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re

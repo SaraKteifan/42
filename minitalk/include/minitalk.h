@@ -1,38 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_bonus.c                                 :+:      :+:    :+:   */
+/*   minitalk.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: skteifan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/02 16:22:14 by skteifan          #+#    #+#             */
-/*   Updated: 2024/10/28 11:49:30 by skteifan         ###   ########.fr       */
+/*   Created: 2025/04/16 10:33:34 by skteifan          #+#    #+#             */
+/*   Updated: 2025/04/19 15:30:28 by skteifan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#ifndef MINITALK_H
+# define MINITALK_H
+# include <unistd.h>
+# include <stdlib.h>
+# include <signal.h>
+# include <sys/types.h>
+# include "../lib/libft/libft.h"
 
-int	put_char_flags(char c, t_flags *flags)
-{
-	int	count;
+# define BUSY 0
+# define READY 1
 
-	count = 0;
-	if (flags->min == 0)
-		count += put_char(c);
-	else
-	{
-		if (flags->left)
-		{
-			count += put_char(c);
-			while (flags->min-- > 1)
-				count += put_char(' ');
-		}
-		else
-		{
-			while (flags->min-- > 1)
-				count += put_char(' ');
-			count += put_char(c);
-		}
-	}
-	return (count);
-}
+#endif

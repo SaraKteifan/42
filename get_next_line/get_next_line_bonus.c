@@ -1,0 +1,154 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: skteifan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/20 14:01:49 by skteifan          #+#    #+#             */
+/*   Updated: 2024/11/20 14:06:33 by skteifan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "get_next_line_bonus.h"
+
+char	*delete_line(char *repo)
+{
+	char	*new_repo;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	while (repo[i] != '\0')
+		i++;
+	while (repo[j] != '\n' && repo[j] != '\0')
+		j++;
+	if (repo[j] == '\n')
+		j++;
+	new_repo = malloc(i - j + 1);
+	if (!new_repo)
+	{
+		free(repo);
+		return (NULL);
+	}
+	i = 0;
+	while (repo[j] != '\0')
+		new_repo[i++] = repo[j++];
+	new_repo[i] = '\0';
+	free (repo);
+	return (new_repo);
+}
+
+char	*cut_the_line(char	*repo)
+{
+	char	*line;
+	int		i;
+
+	i = 0;
+	while (repo[i] != '\n' && repo[i] != '\0')
+		i++;
+	if (repo[i] == '\n')
+		i++;
+	line = malloc(i + 1);
+	if (!line)
+	{
+		free(repo);
+		repo = NULL;
+		return (NULL);
+	}
+	i = 0;
+	while (repo[i] != '\n' && repo[i] != '\0')
+	{
+		line[i] = repo[i];
+		i++;
+	}
+	if (repo[i] == '\n')
+		line[i++] = '\n';
+	line[i] = '\0';
+	return (line);
+}
+
+int	check_no_nl(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+		return (0);
+	while (str[i] != '\0')
+	{
+		if (str[i] == '\n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+char	*reading_file(int fd, char *repo, char *buffer)
+{
+	ssize_t		bytes_read;
+
+	bytes_read = 1;
+	while (repo && check_no_nl(repo) && bytes_read != 0)
+	{
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read == -1 || (ft_strlen(repo) == 0 && bytes_read == 0))
+		{
+			free_all(repo, buffer);
+			repo = NULL;
+			return (NULL);
+		}
+		else if (bytes_read > 0)
+		{
+			buffer[bytes_read] = '\0';
+			repo = ft_strjoin(repo, buffer);
+		}
+	}
+	return (repo);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*repo[1024];
+	char		*line;
+	char		*buffer;
+
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!repo[fd])
+		repo[fd] = initialize_repo();
+	if (!buffer || !repo[fd])
+	{
+		free_all(repo[fd], buffer);
+		repo[fd] = NULL;
+		return (NULL);
+	}
+	repo[fd] = reading_file(fd, repo[fd], buffer);
+	if (!repo[fd])
+		return (NULL);
+	else
+	{
+		free(buffer);
+		line = cut_the_line(repo[fd]);
+		if (!line)
+			return (NULL);
+	}
+	repo[fd] = delete_line(repo[fd]);
+	return (line);
+}
+
+// #include <stdio.h>
+
+// int	main()
+// {
+// 	int	fd;
+// 	char	*line;
+
+// 	fd = open("1char.txt", O_RDONLY);
+// 	while((line = get_next_line(fd)))
+// 	{
+// 		printf("%s", line);
+// 		free(line);
+// 	}
+// 	close(fd);
+// }

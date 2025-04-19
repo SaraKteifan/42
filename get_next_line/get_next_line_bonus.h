@@ -1,38 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_bonus.c                                 :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: skteifan <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/02 16:22:14 by skteifan          #+#    #+#             */
-/*   Updated: 2024/10/28 11:49:30 by skteifan         ###   ########.fr       */
+/*   Created: 2024/11/20 14:03:17 by skteifan          #+#    #+#             */
+/*   Updated: 2024/11/20 14:03:18 by skteifan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
-int	put_char_flags(char c, t_flags *flags)
-{
-	int	count;
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 3
+# endif
 
-	count = 0;
-	if (flags->min == 0)
-		count += put_char(c);
-	else
-	{
-		if (flags->left)
-		{
-			count += put_char(c);
-			while (flags->min-- > 1)
-				count += put_char(' ');
-		}
-		else
-		{
-			while (flags->min-- > 1)
-				count += put_char(' ');
-			count += put_char(c);
-		}
-	}
-	return (count);
-}
+# include <unistd.h>
+# include <stdlib.h>
+# include <fcntl.h>
+
+char	*get_next_line(int fd);
+void	free_all(char *s1, char *s2);
+size_t	ft_strlen(char *s);
+char	*ft_strjoin(char *s1, char *s2);
+char	*initialize_repo(void);
+
+#endif
